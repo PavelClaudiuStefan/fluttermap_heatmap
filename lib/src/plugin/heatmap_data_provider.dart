@@ -1,8 +1,8 @@
 import 'dart:math' as math;
+import 'dart:ui';
 import 'package:flutter_map/flutter_map.dart';
 
 import 'latlong.dart';
-
 
 abstract class HeatMapDataSource {
   /// provides data for the given bounds and zoom level
@@ -13,8 +13,7 @@ class InMemoryHeatMapDataSource extends HeatMapDataSource {
   final List<WeightedLatLng> data;
   final LatLngBounds bounds;
 
-  InMemoryHeatMapDataSource({required this.data})
-      : bounds = LatLngBounds.fromPoints(data.map((e) => e.latLng).toList());
+  InMemoryHeatMapDataSource({required this.data}) : bounds = LatLngBounds.fromPoints(data.map((e) => e.latLng).toList());
 
   ///Filters in memory data returning the data ungridded
   @override
@@ -37,8 +36,7 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
 
   final Map<double, List<WeightedLatLng>> _gridCache = {};
 
-  GriddedHeatMapDataSource({required this.data, required this.radius})
-      : bounds = LatLngBounds.fromPoints(data.map((e) => e.latLng).toList());
+  GriddedHeatMapDataSource({required this.data, required this.radius}) : bounds = LatLngBounds.fromPoints(data.map((e) => e.latLng).toList());
 
   ///Filters in memory data returning the data ungridded
   @override
@@ -48,29 +46,29 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
       if (griddedData.isEmpty) {
         return [];
       }
-      return griddedData
-          .where((point) => bounds.contains(point.latLng))
-          .toList();
+      return griddedData.where((point) => bounds.contains(point.latLng)).toList();
     }
     return [];
   }
 
   List<WeightedLatLng> _getGriddedData(double z) {
+    print('HeatmapDataProvider _getGriddedData($z) - _gridCache.containsKey($z)=${_gridCache.containsKey(z)}');
+
     if (_gridCache.containsKey(z)) {
       return _gridCache[z]!;
     }
-    var leftBound = crs.latLngToPoint(bounds.northWest, z);
+    var leftBound = crs.latLngToOffset(bounds.northWest, z);
 
-    var rightBound = crs.latLngToPoint(bounds.southEast, z);
+    var rightBound = crs.latLngToOffset(bounds.southEast, z);
 
-    var size = Bounds(leftBound, rightBound).size;
+    // var size = Bounds(leftBound, rightBound).size;
+    var size = Rect.fromPoints(leftBound, rightBound).size;
 
     final cellSize = radius / 2;
 
     final gridSize = size;
 
-    List<List<WeightedLatLng?>> grid = []..length =
-        (size.y / cellSize).ceil() + 2;
+    List<List<WeightedLatLng?>> grid = []..length = (size.height / cellSize).ceil() + 2;
 
     List<WeightedLatLng> griddedData = [];
 
@@ -79,9 +77,8 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
     var localMin = 0.0;
     var localMax = 0.0;
     for (final point in data) {
-      var globalPixel = crs.latLngToPoint(point.latLng, z);
-      var pixel =
-          math.Point(globalPixel.x - leftBound.x, globalPixel.y - leftBound.y);
+      var globalPixel = crs.latLngToOffset(point.latLng, z);
+      var pixel = math.Point(globalPixel.dx - leftBound.dx, globalPixel.dy - leftBound.dy);
 
       final x = ((pixel.x) ~/ cellSize) + 2;
       final y = ((pixel.y) ~/ cellSize) + 2;
@@ -90,7 +87,7 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
 
       final k = alt * v;
 
-      grid[y] = grid[y]..length = (size.y / cellSize).ceil() + 2;
+      grid[y] = grid[y]..length = (size.height / cellSize).ceil() + 2;
       var cell = grid[y][x];
 
       if (cell == null) {

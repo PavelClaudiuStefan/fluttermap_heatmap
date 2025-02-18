@@ -60,10 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
     List<dynamic> result = jsonDecode(str);
 
     setState(() {
-      data = result
-          .map((e) => e as List<dynamic>)
-          .map((e) => WeightedLatLng(LatLng(e[0], e[1]), 1))
-          .toList();
+      data = result.map((e) => e as List<dynamic>).map((e) => WeightedLatLng(LatLng(e[0], e[1]), 1)).toList();
     });
   }
 
@@ -89,22 +86,19 @@ class _MyHomePageState extends State<MyHomePage> {
         initialZoom: 8.0,
       ),
       children: [
-        TileLayer(
-            urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
+        TileLayer(urlTemplate: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"),
         if (data.isNotEmpty)
           HeatMapLayer(
             heatMapDataSource: InMemoryHeatMapDataSource(data: data),
-            heatMapOptions: HeatMapOptions(
-                gradient: this.gradients[this.index], minOpacity: 0.1),
+            heatMapOptions: HeatMapOptions(gradient: this.gradients[this.index], minOpacity: 0.1),
             reset: _rebuildStream.stream,
-          )
+          ),
       ],
     );
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      backgroundColor: Colors.pink,
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.

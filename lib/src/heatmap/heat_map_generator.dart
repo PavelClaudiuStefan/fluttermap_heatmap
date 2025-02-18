@@ -11,8 +11,8 @@ class HeatMap {
   }
 
   final HeatMapOptions options;
-  final double width;
-  final double height;
+  final int width;
+  final int height;
   final List<DataPoint> data;
 
   late ByteData _palette;
@@ -36,8 +36,7 @@ class HeatMap {
     Gradient colorGradient = LinearGradient(colors: colors, stops: stops);
     var paletteRect = const Rect.fromLTRB(0, 0, 256, 1);
 
-    var shader = colorGradient.createShader(paletteRect,
-        textDirection: TextDirection.ltr);
+    var shader = colorGradient.createShader(paletteRect, textDirection: TextDirection.ltr);
 
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder, paletteRect);
@@ -58,8 +57,7 @@ class HeatMap {
 
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
-    final baseCirclePainter =
-        AltBaseCirclePainter(radius: radius, blurFactor: options.blurFactor);
+    final baseCirclePainter = AltBaseCirclePainter(radius: radius, blurFactor: options.blurFactor);
     Size size = Size.fromRadius(radius);
     baseCirclePainter.paint(canvas, size);
     final picture = recorder.endRecording();
@@ -73,10 +71,8 @@ class HeatMap {
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
-    final painter = GrayScaleHeatMapPainter(
-        baseCircle: baseCircle, data: data, minOpacity: options.minOpacity);
-    painter.paint(
-        canvas, Size(width + options.radius, height + options.radius));
+    final painter = GrayScaleHeatMapPainter(baseCircle: baseCircle, data: data, minOpacity: options.minOpacity);
+    painter.paint(canvas, Size(width + options.radius, height + options.radius));
 
     final picture = recorder.endRecording();
     final image = await picture.toImage(width.toInt(), height.toInt());
@@ -107,9 +103,7 @@ class HeatMap {
     if (transparentByteCount == byteCount) {
       bitmap = kTransparentImage;
     } else {
-      bitmap = Bitmap.fromHeadless(
-              image.width, image.height, byteData.buffer.asUint8List())
-          .buildHeaded();
+      bitmap = Bitmap.fromHeadless(image.width, image.height, byteData.buffer.asUint8List()).buildHeaded();
     }
 
     return bitmap;
