@@ -9,6 +9,7 @@ class HeatMapLayer extends StatefulWidget {
   final HeatMapDataSource heatMapDataSource;
   final Stream<void>? reset;
   final TileDisplay tileDisplay;
+  final TileUpdateTransformer? tileUpdateTransformer;
   final double maxZoom;
 
   HeatMapLayer(
@@ -18,6 +19,7 @@ class HeatMapLayer extends StatefulWidget {
       List<WeightedLatLng>? initialData,
       this.reset,
       this.tileDisplay = const TileDisplay.fadeIn(),
+      this.tileUpdateTransformer,
       this.maxZoom = 18.0})
       : heatMapOptions = heatMapOptions ?? HeatMapOptions();
 
@@ -63,13 +65,15 @@ class _HeatMapLayerState extends State<HeatMapLayer> {
     return Opacity(
       opacity: widget.heatMapOptions.layerOpacity,
       child: TileLayer(
-        tileSize: 256,
+        tileDimension: 256,
         maxZoom: widget.maxZoom,
         urlTemplate: pseudoUrl,
         tileDisplay: widget.tileDisplay,
+        tileUpdateTransformer: widget.tileUpdateTransformer,
         tileProvider: HeatMapTilesProvider(
-            heatMapOptions: widget.heatMapOptions,
-            dataSource: widget.heatMapDataSource),
+          heatMapOptions: widget.heatMapOptions,
+          dataSource: widget.heatMapDataSource,
+        ),
       ),
     );
   }
