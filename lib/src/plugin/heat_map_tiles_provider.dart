@@ -19,11 +19,13 @@ class HeatMapTilesProvider extends TileProvider {
   ImageProvider getImage(TileCoordinates coordinates, TileLayer options) {
     var tileDimension = options.tileDimension;
 
-    print('----------------------------------------\n'
-        'HeatMapTilesProvider getImage - ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second} ${DateTime.now().millisecondsSinceEpoch}\n'
-        'coordinates: $coordinates\n'
-        'options: $options\n'
-        '----------------------------------------');
+    // if (kDebugMode) {
+    //   print('----------------------------------------\n'
+    //       'HeatMapTilesProvider getImage - ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second} ${DateTime.now().millisecondsSinceEpoch}\n'
+    //       'coordinates: $coordinates\n'
+    //       'options: $options\n'
+    //       '----------------------------------------');
+    // }
 
     // final random = math.Random(coordinates.hashCode);
 

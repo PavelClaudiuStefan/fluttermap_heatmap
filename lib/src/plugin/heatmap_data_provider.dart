@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import 'latlong.dart';
@@ -52,7 +53,9 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
   }
 
   List<WeightedLatLng> _getGriddedData(double z) {
-    print('HeatmapDataProvider _getGriddedData($z) - _gridCache.containsKey($z)=${_gridCache.containsKey(z)}');
+    // if (kDebugMode) {
+    //   print('HeatmapDataProvider _getGriddedData($z) - _gridCache.containsKey($z)=${_gridCache.containsKey(z)}');
+    // }
 
     if (_gridCache.containsKey(z)) {
       return _gridCache[z]!;
