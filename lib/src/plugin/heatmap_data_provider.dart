@@ -57,6 +57,12 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
     //   print('HeatmapDataProvider _getGriddedData($z) - _gridCache.containsKey($z)=${_gridCache.containsKey(z)}');
     // }
 
+    final s = Stopwatch()..start();
+
+    if (kDebugMode) {
+      print('z $z: cached - ${_gridCache.containsKey(z)}');
+    }
+
     if (_gridCache.containsKey(z)) {
       return _gridCache[z]!;
     }
@@ -112,6 +118,11 @@ class GriddedHeatMapDataSource extends HeatMapDataSource {
       }
     }
     _gridCache[z] = griddedData;
+
+    s.stop();
+    if (kDebugMode) {
+      print('z $z: ${s.elapsedMilliseconds} ms');
+    }
 
     return griddedData;
   }

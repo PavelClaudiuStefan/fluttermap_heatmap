@@ -67,9 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _incrementCounter() {
     setState(() {
       index = index == 0 ? 1 : 0;
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        _rebuildStream.add(null);
-      });
+    });
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _rebuildStream.add(null);
     });
   }
 

@@ -17,17 +17,9 @@ class HeatMapTilesProvider extends TileProvider {
 
   @override
   ImageProvider getImage(TileCoordinates coordinates, TileLayer options) {
+    final s = Stopwatch()..start();
+
     var tileDimension = options.tileDimension;
-
-    // if (kDebugMode) {
-    //   print('----------------------------------------\n'
-    //       'HeatMapTilesProvider getImage - ${DateTime.now().hour}:${DateTime.now().minute}:${DateTime.now().second} ${DateTime.now().millisecondsSinceEpoch}\n'
-    //       'coordinates: $coordinates\n'
-    //       'options: $options\n'
-    //       '----------------------------------------');
-    // }
-
-    // final random = math.Random(coordinates.hashCode);
 
     // disable zoom level 0 for now. ned to refactor _filterData
     List<DataPoint> filteredData = coordinates.z != 0 ? _filterData(coordinates, options) : [];
@@ -52,6 +44,19 @@ class HeatMapTilesProvider extends TileProvider {
       //   ),
       // },
     );
+
+    s.stop();
+    if (kDebugMode) {
+      print('\n----------------------------------------\n'
+          'HeatMapTilesProvider - getImage\n'
+          '${s.elapsedMilliseconds < 1 ? '' : (s.elapsedMilliseconds > 3 ? 'WARNING ' : 'DEBUG ')}'
+          'Elapsed: ${s.elapsedMilliseconds} ms / ${s.elapsedMicroseconds} μs\n'
+          'filteredData: ${filteredData.length} points\n'
+          'x=${coordinates.x} / y=${coordinates.y} / z=${coordinates.z}\n'
+          'tileDimension: $tileDimension\n'
+          'options: $options\n');
+    }
+
     return HeatMapImage(filteredData, imageHMOptions, tileDimension);
   }
 
