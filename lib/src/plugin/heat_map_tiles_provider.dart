@@ -57,7 +57,11 @@ class HeatMapTilesProvider extends TileProvider {
           'options: $options\n');
     }
 
-    return HeatMapImage(filteredData, imageHMOptions, tileDimension);
+    return HeatMapImage(
+      filteredData,
+      imageHMOptions,
+      tileDimension,
+    );
   }
 
   /// hyperbolic sine implementation

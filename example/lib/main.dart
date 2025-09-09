@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'flutter_mapmap heat_map demo'),
+      home: MyHomePage(title: 'flutter_map heat_map demo'),
     );
   }
 }
@@ -92,7 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
           HeatMapLayer(
             heatMapDataSource: InMemoryHeatMapDataSource(data: data),
             heatMapOptions: HeatMapOptions(gradient: this.gradients[this.index], minOpacity: 0.1),
-            reset: _rebuildStream.stream,
+
+            // reset: _rebuildStream.stream,
           ),
       ],
     );

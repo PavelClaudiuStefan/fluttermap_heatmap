@@ -3,6 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_heatmap/flutter_map_heatmap.dart';
+import 'package:flutter_map_heatmap/src/custom_tile_layer.dart';
+import 'package:flutter_map_heatmap/src/plugin/heat_map_tiles_provider_v2.dart';
+import 'package:flutter_map_heatmap/src/plugin/heatmap_utils.dart';
+import 'package:isolate_manager/isolate_manager.dart';
 
 class HeatMapLayer extends StatefulWidget {
   final HeatMapOptions heatMapOptions;
@@ -36,6 +40,12 @@ class _HeatMapLayerState extends State<HeatMapLayer> {
   /// cache, a pseudoUrl is generated every time a reset is requested
   late String pseudoUrl;
 
+  late final IsolateManager<List<DataPoint>, DataFilteringParams> _filterDataIsolateManager = IsolateManager.create(
+    HeatMapTilesUtils.filterData,
+    workerName: 'HeatMapTilesUtils.filterData',
+    concurrent: 2,
+  );
+
   @override
   void initState() {
     _regenerateUrl();
@@ -62,6 +72,41 @@ class _HeatMapLayerState extends State<HeatMapLayer> {
 
   @override
   Widget build(BuildContext context) {
+
+    // Custom tile layer
+    return Opacity(
+      opacity: widget.heatMapOptions.layerOpacity,
+      child: CustomTileLayer(
+        tileDimension: 256,
+        maxZoom: widget.maxZoom,
+        urlTemplate: pseudoUrl,
+        tileDisplay: widget.tileDisplay,
+        tileUpdateTransformer: widget.tileUpdateTransformer,
+        tileProvider: HeatMapTilesProviderV2(
+          filterDataIsolateManager: _filterDataIsolateManager,
+          heatMapOptions: widget.heatMapOptions,
+          dataSource: widget.heatMapDataSource,
+        ),
+      ),
+    );
+
+    // Custom tile provider
+    return Opacity(
+      opacity: widget.heatMapOptions.layerOpacity,
+      child: TileLayer(
+        tileDimension: 256,
+        maxZoom: widget.maxZoom,
+        urlTemplate: pseudoUrl,
+        tileDisplay: widget.tileDisplay,
+        tileUpdateTransformer: widget.tileUpdateTransformer,
+        tileProvider: HeatMapTilesProviderV2(
+          filterDataIsolateManager: _filterDataIsolateManager,
+          heatMapOptions: widget.heatMapOptions,
+          dataSource: widget.heatMapDataSource,
+        ),
+      ),
+    );
+
     return Opacity(
       opacity: widget.heatMapOptions.layerOpacity,
       child: TileLayer(
